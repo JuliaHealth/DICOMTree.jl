@@ -19,7 +19,7 @@ using DICOMTree
 
 dcm_file = dcm_parse(dcm_path)
 
-Tree(dcm_file, with_keys::Bool=false, maxdepth = 2)
+Tree(dcm_file, with_keys = false, maxdepth = 2)
 ```
 Output (with colours in the REPL) : 
 
@@ -92,7 +92,7 @@ PatientID
 Then, we can focus on a specifi tag :
 
 ```Julia
-Tree(rs.ROIContourSequence, maxdepth = 3)
+Tree(dcm_file.ROIContourSequence, maxdepth = 3)
 ```
 
 Output (with colours in the REPL) : 
