@@ -69,7 +69,7 @@ PatientID
   ├─ InstanceNumber ⇒ 1
   ├─ FileMetaInformationGroupLength ⇒ 202
   ├─ ReferringPhysicianName ⇒ Unspecified
-  ├─ Manufacturer ⇒ TheraPanacea
+  ├─ Manufacturer ⇒ Company
   ├─ ReviewDate ⇒ Any[]
   │
   ├─ InstanceCreationTime ⇒ 123456
