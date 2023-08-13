@@ -89,7 +89,7 @@ PatientID
 
 - `maxdepth` defines the depth at which the DICOM tree is explored. Default is 2. Note that a high scan depth may take a few seconds to be displayed. 
 
-Then, we can focus on a specifi tag :
+Then, we can focus on a specific tag :
 
 ```Julia
 Tree(dcm_file.ROIContourSequence, maxdepth = 3)
