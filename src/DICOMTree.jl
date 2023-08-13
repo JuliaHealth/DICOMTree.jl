@@ -1,7 +1,7 @@
 module DICOMTree
 import Term.Trees: Tree, TreeCharSet, print_node, print_key, Theme, TERM_THEME, _TREE_PRINTING_TITLE
 import Term.Style: apply_style
-import DICOM
+using DICOM
 
 export Tree
 
@@ -16,13 +16,48 @@ function get_symbol(gelt::Tuple{UInt16,UInt16})
     elseif gelt[1] & 0xff00 == 0x6000
         gelt = (0x6000, gelt[2])
     end
-    r = get(dcm_dict, gelt, empty_vr_lookup)
+    r = get(DICOM.dcm_dict, gelt, DICOM.empty_vr_lookup)
 
     (r[1] == "") ? (return gelt) : (return r[1])
 end
 
+"""
+    Tree(
+        tree;
+        with_keys::Bool = false,
+        guides::Union{TreeCharSet,Symbol} = :standardtree,
+        theme::Theme = TERM_THEME[],
+        printkeys::Union{Nothing,Bool} = true,
+        print_node_function::Function = print_node,
+        print_key_function::Function = print_key,
+        title::Union{String, Nothing}=nothing,
+        prefix::String = "  ",
+        kwargs...,
+    )
+
+Constructor for `Tree`
+
+It uses `AbstractTrees.print_tree` to get a string representation of `tree` (any object
+compatible with the `AbstractTrees` packge). Applies style to the string and creates a 
+renderable `Tree`.
+
+Arguments:
+- `tree`: anything compatible with `AbstractTree`
+- 'with_keys': if `true` print DICOM keys (e.g. : (0x0010, 0x0020)). If `false`, print DICOM tags( e.g. : PatientID).
+- `guides`: if a symbol, the name of preset tree guides types. Otherwise an instance of
+    `AbstractTrees.TreeCharSet`
+- `theme`: `Theme` used to set tree style.
+- `printkeys`: If `true` print keys. If `false` don't print keys. 
+- `print_node_function`: Function used to print nodes.
+- `print_key_function`: Function used to print keys.
+- `title`: Title of the tree.
+- `prefix`: Prefix to be used in `AbstractTrees.print_tree`
+
+
+For other kwargs look at `AbstractTrees.print_tree`
+"""
 function Tree(
-    dicom::DICOMData;
+    dicom::DICOM.DICOMData;
     with_keys::Bool = false,
     guides::Union{TreeCharSet,Symbol} = :standardtree,
     theme::Theme = Theme(tree_max_leaf_width = displaysize(stdout)[2]),
@@ -55,11 +90,11 @@ function Tree(
         end
     end
 
-    function format(x::DICOMData, md)::Tree
+    function format(x::DICOM.DICOMData, md)::Tree
         return Tree(x.meta, with_keys = with_keys, guides = guides, title = "", maxdepth = md)
     end
 
-    function format(x::Vector{DICOMData}, md)::Tree
+    function format(x::Vector{DICOM.DICOMData}, md)::Tree
         if md >= 2
             return Tree(Tree.(x, with_keys = with_keys, guides = guides, title = "", maxdepth = md), with_keys = with_keys, guides = guides, title = "", maxdepth = md)
         else
@@ -91,7 +126,7 @@ function Tree(
 end
 
 function Tree(
-    dicom_vector::Vector{DICOMData};
+    dicom_vector::Vector{DICOM.DICOMData};
     with_keys::Bool = false,
     guides::Union{TreeCharSet,Symbol} = :standardtree,
     theme::Theme = Theme(tree_max_leaf_width = displaysize(stdout)[2]),

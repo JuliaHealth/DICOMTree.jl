@@ -3,6 +3,10 @@ uuid = "c4d2416d-3439-49b0-a3b3-18bf95df003e"
 authors = ["François de Kermenguy"]
 version = "1.0.0-DEV"
 
+[deps]
+DICOM = "a26e6606-dd52-5f6a-a97f-4f611373d757"
+Term = "22787eb5-b846-44ae-b979-8e399b8463ab"
+
 [compat]
 julia = "1"
 
