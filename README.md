@@ -21,7 +21,7 @@ dcm_file = dcm_parse(dcm_path)
 
 Tree(dcm_file, with_keys::Bool=false, maxdepth = 2)
 ```
-Output : 
+Output (with colours in the REPL) : 
 
 ```
 PatientID
@@ -85,17 +85,17 @@ PatientID
   └─ InstanceCreationDate ⇒ 12345678
 ```
 
-- with_keys = true will replace the name with the associated tag (e.g. : (0x0010, 0x0020) if true and PatientID if false). Default is false.
+- `with_keys = true` will replace the name with the associated tag (e.g. : (0x0010, 0x0020) if true and PatientID if false). Default is false.
 
-- maxdepth defines the depth at which the DICOM tree is explored. Default is 2. Note that a high scan depth may take a few seconds to be displayed. 
+- `maxdepth` defines the depth at which the DICOM tree is explored. Default is 2. Note that a high scan depth may take a few seconds to be displayed. 
 
-Then, 
+Then, we can focus on a specifi tag :
 
 ```Julia
-Tree(dcm_file Tree(rs.ROIContourSequence, maxdepth = 3))
+Tree(rs.ROIContourSequence, maxdepth = 3)
 ```
 
-Output : 
+Output (with colours in the REPL) : 
 
 ```
 └─ 1 ⇒
