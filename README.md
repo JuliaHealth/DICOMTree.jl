@@ -26,7 +26,7 @@ Output (with colours in the REPL) :
 ```
 PatientID
   ├─ StructureSetName ⇒ ART: Unapproved
-  ├─ StudyDate ⇒ 20180802
+  ├─ StudyDate ⇒ 12345678
   ├─ StructureSetROISequence ⇒ Vector of DICOMData
   │                              └─ Length ⇒ 46
   │
