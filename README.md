@@ -1,7 +1,7 @@
 # DICOMTree
 
 A little Julia package for visualizing DICOM file metadata in the form of a tree. The main function is the Tree function, which is simply a dispatch of the eponymous function in the Term.jl package to the DICOMData type in the DICOM.jl package. 
-The package have been teste with CT Scanner, RTDose and RTStruct files. 
+The package have been tested with CT Scanner, RTDose and RTStruct files. 
 
 ## Documentation & installation
 
@@ -24,7 +24,6 @@ Tree(dcm_file, with_keys::Bool=false, maxdepth = 2)
 Output : 
 
 ```
-julia> Tree(rs)
 PatientID
   ├─ StructureSetName ⇒ ART: Unapproved
   ├─ StudyDate ⇒ 20180802
@@ -92,7 +91,8 @@ PatientID
 
 Then, 
 
-```Tree(dcm_file Tree(rs.ROIContourSequence, maxdepth = 3))
+```Julia
+Tree(dcm_file Tree(rs.ROIContourSequence, maxdepth = 3))
 ```
 
 Output : 
