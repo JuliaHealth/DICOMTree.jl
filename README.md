@@ -23,7 +23,7 @@ Tree(dcm_file, with_keys::Bool=false, maxdepth = 2)
 ```
 Output : 
 
-'''
+```
 julia> Tree(rs)
 PatientID
   ├─ StructureSetName ⇒ ART: Unapproved
@@ -84,7 +84,7 @@ PatientID
   ├─ SeriesDescription ⇒ xxx
   ├─ PatientBirthDate ⇒ 12345678
   └─ InstanceCreationDate ⇒ 12345678
-'''
+```
 
 - with_keys = true will replace the name with the associated tag (e.g. : (0x0010, 0x0020) if true and PatientID if false). Default is false.
 
@@ -92,13 +92,12 @@ PatientID
 
 Then, 
 
-'''
-Tree(dcm_file Tree(rs.ROIContourSequence, maxdepth = 3))
+```Tree(dcm_file Tree(rs.ROIContourSequence, maxdepth = 3))
 ```
 
 Output : 
 
-'''
+```
 └─ 1 ⇒
            ├─ ContourSequence ⇒
            │                      ├─ 1 ⇒
@@ -126,4 +125,4 @@ Output :
            │                      │        └─ ContourImageSequence ⇒ Vector of DICOMData
            │                      │                                    └─ Length ⇒ 1
            ...
-'''
+```
