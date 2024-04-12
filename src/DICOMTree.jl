@@ -79,7 +79,6 @@ function Tree(
 
     function format(x::AbstractArray, md)::Tree
         return (Tree(Dict("Size" => string(size(x)), "Type" => typeof(x)),
-            with_keys=with_keys,
             guides=guides,
             title="Array",
             maxdepth=md))
@@ -87,7 +86,7 @@ function Tree(
 
     function format(x::Vector, md)::Tree
         if length(x) <= 6
-            return Tree(string(x), with_keys=with_keys, guides=guides)
+            return Tree(string(x), guides=guides)
         else
             return Tree(Dict("Length" => length(x),
                     "ElementsType" => eltype(x),
@@ -96,14 +95,14 @@ function Tree(
     end
 
     function format(x::DICOM.DICOMData, md)::Tree
-        return Tree(x.meta, with_keys=with_keys, guides=guides, title="", maxdepth=md)
+        return Tree(x.meta, guides=guides, title="", maxdepth=md)
     end
 
     function format(x::Vector{DICOM.DICOMData}, md)::Tree
         if md >= 2
-            return Tree(Tree.(x, with_keys=with_keys, guides=guides, title="", maxdepth=md), with_keys=with_keys, guides=guides, title="", maxdepth=md)
+            return Tree(Tree.(x, with_keys=with_keys, guides=guides, title="", maxdepth=md), guides=guides, title="", maxdepth=md)
         else
-            return Tree(Dict("Length" => length(keys(x))), with_keys=with_keys, guides=guides, title="Vector of DICOMData", maxdepth=md)
+            return Tree(Dict("Length" => length(keys(x))), guides=guides, title="Vector of DICOMData", maxdepth=md)
         end
     end
 
@@ -115,7 +114,8 @@ function Tree(
             tree[symbol] = format(dicom[symbol], md - 1)
         end
     else
-        for symbol in get_name_from_tag.(keys(dicom.meta))
+        tag_names = get_name_from_tag.(keys(dicom.meta))
+        for symbol in tag_names
             tree[symbol] = format(dicom[symbol], md - 1)
         end
     end
@@ -126,7 +126,7 @@ function Tree(
         title = ""
     end
 
-    return Tree(tree, with_keys=with_keys, guides=guides, title=title, maxdepth=md - 1)
+    return Tree(tree, guides=guides, title=title, maxdepth=md - 1)
 
 end
 
@@ -143,7 +143,7 @@ function Tree(
     kwargs...
 )
     md = haskey(kwargs, :maxdepth) ? kwargs[:maxdepth] : 2
-    return Tree(Tree.(dicom_vector, with_keys=with_keys, guides=guides, title="", maxdepth=md), with_keys=with_keys, guides=guides, title="", maxdepth=md)
+    return Tree(Tree.(dicom_vector, with_keys=with_keys, guides=guides, title="", maxdepth=md), guides=guides, title="", maxdepth=md)
 end
 
 end
