@@ -1,7 +1,9 @@
 module DICOMTree
 import Term.Trees: Tree, TreeCharSet, print_node, print_key, Theme, TERM_THEME, _TREE_PRINTING_TITLE
 import Term.Style: apply_style
+
 using DICOM
+using OrderedCollections: OrderedDict
 
 export Tree
 
@@ -68,55 +70,25 @@ function Tree(
     title::Union{String,Nothing}="",
     prefix::String="  ",
     kwargs...
-)
+)::Tree
+
     _TREE_PRINTING_TITLE[] = title
     _theme = TERM_THEME[]
     TERM_THEME[] = theme
 
     md = haskey(kwargs, :maxdepth) ? kwargs[:maxdepth] : 2
 
-    format(x, md) = x
-
-    function format(x::AbstractArray, md)::Tree
-        return (Tree(Dict("Size" => string(size(x)), "Type" => typeof(x)),
-            guides=guides,
-            title="Array",
-            maxdepth=md))
-    end
-
-    function format(x::Vector, md)::Tree
-        if length(x) <= 6
-            return Tree(string(x), guides=guides)
-        else
-            return Tree(Dict("Length" => length(x),
-                    "ElementsType" => eltype(x),
-                    "Overview" => string(x[begin:begin+2])[1:end-1] * ", ..., " * string(x[end-3:end-1])[2:end]), guides=guides, title="Vector", maxdepth=md)
-        end
-    end
-
-    function format(x::DICOM.DICOMData, md)::Tree
-        return Tree(x.meta, guides=guides, title="", maxdepth=md)
-    end
-
-    function format(x::Vector{DICOM.DICOMData}, md)::Tree
-        if md >= 2
-            return Tree(Tree.(x, with_keys=with_keys, guides=guides, title="", maxdepth=md), guides=guides, title="", maxdepth=md)
-        else
-            return Tree(Dict("Length" => length(keys(x))), guides=guides, title="Vector of DICOMData", maxdepth=md)
-        end
-    end
-
-
-    tree = Dict()
-
     if with_keys
-        for symbol in keys(dicom.meta)
-            tree[symbol] = format(dicom[symbol], md - 1)
+        tree = OrderedDict{Tuple{UInt16, UInt16}, Any}()
+        tag_keys = keys(sort(dicom.meta))
+        for symbol in tag_keys
+            tree[symbol] = _format(dicom[symbol], md - 1, guides, with_keys)
         end
     else
-        tag_names = get_name_from_tag.(keys(dicom.meta))
+        tree = OrderedDict{Symbol, Any}()
+        tag_names = get_name_from_tag.(keys(sort(dicom.meta)))
         for symbol in tag_names
-            tree[symbol] = format(dicom[symbol], md - 1)
+            tree[symbol] = _format(dicom[symbol], md - 1, guides, with_keys)
         end
     end
 
@@ -141,9 +113,43 @@ function Tree(
     title::Union{String,Nothing}="",
     prefix::String="  ",
     kwargs...
-)
+)::Tree
     md = haskey(kwargs, :maxdepth) ? kwargs[:maxdepth] : 2
     return Tree(Tree.(dicom_vector, with_keys=with_keys, guides=guides, title="", maxdepth=md), guides=guides, title="", maxdepth=md)
 end
 
+
+_format(x, md, guides, with_keys) = x
+
+function _format(x::AbstractArray, md, guides, with_keys)::Tree
+    return (Tree(Dict("Size" => string(size(x)), "Type" => typeof(x)),
+        guides=guides,
+        title="Array",
+        maxdepth=md))
 end
+
+function _format(x::Vector, md, guides, with_keys)::Tree
+    if length(x) <= 6
+        return Tree(string(x), guides=guides)
+    else
+        return Tree(Dict("Length" => length(x),
+                "ElementsType" => eltype(x),
+                "Overview" => string(x[begin:begin+2])[1:end-1] * ", ..., " * string(x[end-3:end-1])[2:end]), guides=guides, title="Vector", maxdepth=md)
+    end
+end
+
+function _format(x::DICOM.DICOMData, md, guides, with_keys)::Tree
+    return Tree(x.meta, guides=guides, title="", maxdepth=md)
+end
+
+function _format(x::Vector{DICOM.DICOMData}, md, guides, with_keys)::Tree
+    if md >= 2
+        return Tree(Tree.(x, with_keys=with_keys, guides=guides, title="", maxdepth=md), guides=guides, title="", maxdepth=md)
+    else
+        return Tree(Dict("Length" => length(keys(x))), guides=guides, title="Vector of DICOMData", maxdepth=md)
+    end
+end
+
+
+end
+

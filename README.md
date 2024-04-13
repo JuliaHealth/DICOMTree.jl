@@ -1,7 +1,11 @@
 # DICOMTree
 
-A little Julia package for visualizing DICOM file metadata in the form of a tree. The main function is the Tree function, which is simply a dispatch of the eponymous function in the Term.jl package to the DICOMData type in the DICOM.jl package. 
+A little Julia package for visualizing DICOM file metadata in the form of a tree. The main function is the Tree function, which is simply a dispatch of the eponymous function in the [Term.jl](https://github.com/FedeClaudi/Term.jl) package to the ```DICOMData``` type in the [DICOM.jl](https://github.com/JuliaHealth/DICOM.jl) package. 
 The package have been tested with CT Scanner, RTDose and RTStruct files. 
+
+<p align="center">
+  <img src="DICOMTree_logo.png" alt="DICOMTree Logo" width="100">
+</p>
 
 ## Documentation & installation
 
